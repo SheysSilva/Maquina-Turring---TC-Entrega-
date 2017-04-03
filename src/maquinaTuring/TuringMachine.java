@@ -74,10 +74,6 @@ public class TuringMachine {
 					System.out.println(" " + estadoAtual + " " + fita.substring(simboloAtual));
 				}
 			}
-			
-			
-			
-			
 
 			Iterator<Transition> iteradorDeTransicao = conjuntoDeFuncoesDeTransicao.iterator();
 			while ( iteradorDeTransicao.hasNext() && foundTransition == false)
@@ -118,9 +114,7 @@ public class TuringMachine {
 					fita = fita.concat("_");
 				}
 				
-				
 			}			
-		
 			
 		}
 		
