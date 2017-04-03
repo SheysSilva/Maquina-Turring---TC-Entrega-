@@ -18,30 +18,9 @@ public class TuringMachine {
 	private String estadoAtual;
 	private int simboloAtual;
 		
-	class Transition
-	{
-		String lerEstado;
-		char lerSimbolo;
-		String escreverEstado;
-		char escreverSimbolo;
-		boolean direcao;	//true is right, false is left
-		
-		boolean isConflicting(String estado, char simbolo)
-		{
-			if (estado.equals(lerEstado) && simbolo == lerSimbolo)
-			{
-				return true;
-			}
-			else
-			{
-				return false;			
-			}
-		}		
-	}
 	
 	
-	public TuringMachine()
-	{
+	public TuringMachine(){
 		conjuntoDeEstados = new HashSet<String>();
 		conjuntoDeFuncoesDeTransicao = new HashSet<Transition>();
 		estadoInicial = new String("");
@@ -53,138 +32,109 @@ public class TuringMachine {
 		
 	}
 	
-	public boolean Run(String entrada, boolean modoSilencioso)
-	{
+	public boolean Run(String entrada, boolean modoSilencioso){
 		estadoAtual = estadoInicial;
 		fita = entrada;
 		
-		while(!estadoAtual.equals(conjuntoDeEstadosDeAceitacao) && !estadoAtual.equals(conjuntoDeEstadosDeRejeicao))
-		{
+		while(!estadoAtual.equals(conjuntoDeEstadosDeAceitacao) && !estadoAtual.equals(conjuntoDeEstadosDeRejeicao)){
 			boolean foundTransition = false;
 			Transition CurrentTransition = null;
 			
-			if (modoSilencioso == false)
-			{
-				if (simboloAtual>0)
-				{
+			if (modoSilencioso == false){
+				if (simboloAtual>0){
 					System.out.println(fita.substring(0, simboloAtual) + " " + estadoAtual + " " + fita.substring(simboloAtual));
 				}
-				else
-				{
+				else{
 					System.out.println(" " + estadoAtual + " " + fita.substring(simboloAtual));
 				}
 			}
 			
 			
-			
-			
-
 			Iterator<Transition> iteradorDeTransicao = conjuntoDeFuncoesDeTransicao.iterator();
-			while ( iteradorDeTransicao.hasNext() && foundTransition == false)
-		    {
+			while ( iteradorDeTransicao.hasNext() && foundTransition == false){
+				
 				Transition nextTransition = iteradorDeTransicao.next();
-				if (nextTransition.lerEstado.equals(estadoAtual) && nextTransition.lerSimbolo == fita.charAt(simboloAtual))
-				{
+				if (nextTransition.getLerEstado().equals(estadoAtual) && nextTransition.getLerSimbolo() == fita.charAt(simboloAtual)){
 					foundTransition = true;
 					CurrentTransition = nextTransition;
 				}						
 		    }	
 			
-			if (foundTransition == false)
-			{
+			if (foundTransition == false){
 				System.err.println ("There is no valid transition for this phase! (state=" + estadoAtual + ", symbol=" + fita.charAt(simboloAtual) + ")");
 				return false;
 			}
 			else
 			{
-				estadoAtual = CurrentTransition.escreverEstado;
+				estadoAtual = CurrentTransition.getEscreverEstado();
 				char[] tempTape = fita.toCharArray(); 				
-				tempTape[simboloAtual] = CurrentTransition.escreverSimbolo;
+				tempTape[simboloAtual] = CurrentTransition.getEscreverSimbolo();
 				fita =  new String(tempTape);
-				if(CurrentTransition.direcao==true)
-				{
+				if(CurrentTransition.isDirecao() == true){
 					simboloAtual++;
 				}
-				else
-				{
+				else{
 					simboloAtual--;
 				}
 				
 				if (simboloAtual < 0)
 					simboloAtual = 0;
 				
-				while (fita.length() <= simboloAtual)
-				{
+				while (fita.length() <= simboloAtual){
 					fita = fita.concat("_");
 				}
-				
-				
-			}			
-		
+					
+			}				
 			
 		}
 		
-		if (estadoAtual.equals(conjuntoDeEstadosDeAceitacao))
-		{
+		if (estadoAtual.equals(conjuntoDeEstadosDeAceitacao)){
 			return true;
 		}
-		else
-		{
+		else{
 			return false;
 		}
 		
 		
 	}
 	
-	public boolean addState(String newState)
-	{
-		if (conjuntoDeEstados.contains(newState))
-		{
+	public boolean addState(String newState){
+		if (conjuntoDeEstados.contains(newState)){
 			return false;
 		}
-		else
-		{
+		else{
 			conjuntoDeEstados.add(newState);
 			return true;
 		}
 	}
 	
-	public boolean setStartState(String newStartState)
-	{
-		if (conjuntoDeEstados.contains(newStartState))
-		{
+	public boolean setStartState(String newStartState){
+		if (conjuntoDeEstados.contains(newStartState)){
 			estadoInicial = newStartState;
 			return true;
 		}
-		else
-		{
+		else{
 			return false;
 		}		
 	}
 	
-	public boolean setAcceptState(String newAcceptState)
-	{
-		if (conjuntoDeEstados.contains(newAcceptState) && !conjuntoDeEstadosDeRejeicao.equals(newAcceptState))
-		{
+	public boolean setAcceptState(String newAcceptState){
+		if (conjuntoDeEstados.contains(newAcceptState) && !conjuntoDeEstadosDeRejeicao.equals(newAcceptState)){
 			conjuntoDeEstadosDeAceitacao = newAcceptState;
 			return true;
 		}
-		else
-		{
+		else{
 			return false;
 		}
 		
 	}
 	
-	public boolean setRejectState(String newRejectState)
-	{
-		if (conjuntoDeEstados.contains(newRejectState) && !conjuntoDeEstadosDeAceitacao.equals(newRejectState))
-		{
+	public boolean setRejectState(String newRejectState){
+		if (conjuntoDeEstados.contains(newRejectState) && !conjuntoDeEstadosDeAceitacao.equals(newRejectState)){
 			conjuntoDeEstadosDeRejeicao = newRejectState;
 			return true;
 		}
-		else
-		{
+		else{
 			return false;
 		}		
 	}
@@ -207,18 +157,16 @@ public class TuringMachine {
 			}
 					
 	    }
-		if (conflict == true)
-		{
+		if (conflict == true){
 			return false;
 		}
-		else
-		{
+		else{
 			Transition newTransition = new Transition();
-			newTransition.lerEstado = rState;
-			newTransition.lerSimbolo = rSymbol;
-			newTransition.escreverEstado = wState;
-			newTransition.escreverSimbolo = wSymbol;
-			newTransition.direcao = mDirection;
+			newTransition.setLerEstado(rState);
+			newTransition.setLerSimbolo(rSymbol);
+			newTransition.setEscreverEstado(wState);
+			newTransition.setEscreverSimbolo(wSymbol);
+			newTransition.setDirecao(mDirection);
 			conjuntoDeFuncoesDeTransicao.add(newTransition);
 			return true;
 		}
